@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "ex_3_auth",
+    "slug": "ex-3-auth",
+    "version": "1.0.0",
+    "sdkVersion": "52.0.0",
+    "platforms": ["ios", "android", "web"],
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "entryPoint": "./index.js"
+  }
+}
