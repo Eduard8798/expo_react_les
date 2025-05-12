@@ -10,7 +10,7 @@ const CreateUsers = ({navigation}) => {
     const [phone, setPhone] = useState('');
 
 
-
+//git
     const addUserHandler = async () => {
         if (name.trim()) {
             const id = await insertUser(name,phone);
@@ -51,7 +51,7 @@ const CreateUsers = ({navigation}) => {
     useEffect(() => {
         createTable();
     }, []);
-    
+
     return (
         <View style={styles.container}>
             <Text>SQLite CRUD</Text>
