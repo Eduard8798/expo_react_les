@@ -1,8 +1,10 @@
 import React from 'react';
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
-import UsersDetails from "./UsersDetails";
-import CreateUsers from "./CreateUsers";
+import CreateUser from "./CreateUser";
+import TaskScreen from "./TaskScreen";
+import {AddTaskScreen} from "./AddTask";
+
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -10,8 +12,10 @@ export default function App() {
         <NavigationContainer>
             <Stack.Navigator
                 initialRouteName={'CreateUsers'} >
-                <Stack.Screen name={'CreateUsers'} component={CreateUsers}/>
-                <Stack.Screen name={'UsersDetails'} component={UsersDetails}/>
+                <Stack.Screen name={'CreateUsers'} component={CreateUser}/>
+                <Stack.Screen name={'TaskScreen'} component={TaskScreen}/>
+                <Stack.Screen name={'AddTask'} component={AddTaskScreen}/>
+
             </Stack.Navigator>
         </NavigationContainer>
     );
