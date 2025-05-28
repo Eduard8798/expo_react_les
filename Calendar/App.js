@@ -1,29 +1,31 @@
-import { View,StyleSheet } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import {NavigationContainer} from "@react-navigation/native";
+import {createStackNavigator} from '@react-navigation/stack';
 import Calendar from "./Calendar";
-// import {createStackNavigator} from "@react-navigation/stack";
-// import {NavigationContainer} from "@react-navigation/native";
-//
-// const Stack = createStackNavigator();
+import CalendarList from "./CalendarList";
+import TasksList from "./TasksList";
+import AddTask from "./AddTask";
+import EditTask from "./EditTask";
+import Auth from "./Auth";
+
+const Stack = createStackNavigator();
 
 const App = () => {
     return (
 
-        <View style={styles.container}>
-            <View>
-            <Calendar/>
-            <StatusBar style="auto" />
-            </View>
-        </View>
+
+    <NavigationContainer>
+        <Stack.Navigator
+            initialRouteName={'CalendarList'} >
+            <Stack.Screen name={'CalendarList'} component={CalendarList}/>
+            <Stack.Screen name={'Calendar'} component={Calendar}/>
+            <Stack.Screen name={'TasksList'} component={TasksList}/>
+            <Stack.Screen name={'AddTask'} component={AddTask}/>
+            <Stack.Screen name={'EditTask'} component={EditTask}/>
+            <Stack.Screen name={'Auth'} component={Auth}/>
+        </Stack.Navigator>
+    </NavigationContainer>
     );
 }
 export default App;
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    }
-})
+

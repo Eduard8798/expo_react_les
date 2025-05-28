@@ -1,14 +1,15 @@
-import React, {useState,useEffect} from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import dayjs from 'dayjs';
 import {Entypo} from "@expo/vector-icons";
+import {createTable, fetchDays, insertDays} from "./database";
 
-const Calendar = () => {
+const Calendar = ({navigation,setDarkMode,darkMode}) => {
 
-    const [munthChange,setMunthChange] = useState(0);
+    const [munthChange, setMunthChange] = useState(0);
 
-const currentDay = dayjs();
+    // const currentDay = dayjs();
     let today = dayjs();
     const prevMonth = today.subtract(munthChange, 'month');
     today = prevMonth
@@ -20,79 +21,97 @@ const currentDay = dayjs();
     const week = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
     const daysInPrevMonth = prevMonth.daysInMonth();
-    const emptyDays = Array.from({ length: firstDayOfMonth }, (_, i) => {
+    const emptyDays = Array.from({length: firstDayOfMonth}, (_, i) => {
         return (daysInPrevMonth - firstDayOfMonth + i + 1).toString();
     });
 
-    const emptyDaysEnd = Array.from({ length: (7 - lastDayOfMonth) }, (_, i) => {
+    const emptyDaysEnd = Array.from({length: (7 - lastDayOfMonth)}, (_, i) => {
         return (i + 1).toString();
     });
-    const [allDays,setAllDays] = useState({emptyDaysSet:[],daysSet:[],emptyDaysEndSet:[]});
+    const [allDays, setAllDays] = useState({emptyDaysSet: [], daysSet: [], emptyDaysEndSet: []});
     useEffect(() => {
-    setAllDays({
-        emptyDaysSet: emptyDays,
-        daysSet: days,
-        emptyDaysEndSet: emptyDaysEnd
+        setAllDays({
+            emptyDaysSet: emptyDays,
+            daysSet: days,
+            emptyDaysEndSet: emptyDaysEnd
 
-    });
-}, [munthChange]);
+        });
+    }, [munthChange]);
 
-    const [color,setColor] = useState('white');
+    const [color, setColor] = useState('white');
     const [isDarkMode, setIsDarkMode] = useState(false);
-const switchStyleColor = () => {
-    setColor(prevState => (prevState === 'white' ? 'black' : 'white'))
-    setIsDarkMode(prev => !prev)
-}
-
-
-console.log('isCurrentDay',isCurrentDay)
-
+    const switchStyleColor = () => {
+        setColor(prevState => (prevState === 'white' ? 'black' : 'white'))
+        setIsDarkMode(prev => !prev)
+        setDarkMode(prev => !prev)
+        console.log('dayMode',darkMode)
+    }
 
     const isCurrentDay = (day) => {
         const currentMonth = dayjs().subtract(munthChange, 'month');
         const dateToCheck = currentMonth.date(Number(day));
         return dayjs().isSame(dateToCheck, 'day');
     };
+    useEffect(() => {
+        createTable();
+    }, []);
 
+     const createIdDay = async (fullDate) => {
+        return await insertDays(fullDate);
+    };
 
-
-
-
-
-
+    const loadDays = async () =>{
+        return await fetchDays();
+    }
     return (
 
         <View style={isDarkMode ? styles.allBorder : styles.allBorderWhite}>
-            <Entypo name={isDarkMode ? 'light-up' : 'moon'  }  size={34} onPress={switchStyleColor} color={isDarkMode ? 'white' : 'black'}  style={{left:150}}/>
+            <Entypo name={isDarkMode ? 'light-up' : 'moon'} size={34} onPress={switchStyleColor}
+                    color={isDarkMode ? 'white' : 'black'} style={{left: 150}}/>
             <View style={styles.buttonStyle}>
 
-                <Text style={isDarkMode ? styles.monthStyle : styles.monthStyleWhite}>{prevMonth.format('MMMM YYYY').toString()}</Text>
+                <Text
+                    style={isDarkMode ? styles.monthStyle : styles.monthStyleWhite}>{prevMonth.format('MMMM YYYY').toString()}</Text>
 
-                <AntDesign style={isDarkMode ? styles.textButMonthUp : styles.textButMonthUpWhite} name="up"  onPress={()=>setMunthChange(prev => (prev + 1))} />
-                <AntDesign style={isDarkMode ? styles.textButMonthDown : styles.textButMonthDownWhite} name="down"  onPress={()=>setMunthChange(prev => (prev - 1))} />
-
+                <AntDesign style={isDarkMode ? styles.textButMonthUp : styles.textButMonthUpWhite} name="up"
+                           onPress={() => setMunthChange(prev => (prev + 1))}/>
+                <AntDesign style={isDarkMode ? styles.textButMonthDown : styles.textButMonthDownWhite} name="down"
+                           onPress={() => setMunthChange(prev => (prev - 1))}/>
 
 
             </View>
             <View style={styles.box}>
 
                 {week.map((item, index) => (
-                    <Text style={isDarkMode ? styles.cell : styles.cellWhite}  key={index}>{item}</Text>
+                    <Text style={isDarkMode ? styles.cell : styles.cellWhite} key={index}>{item}</Text>
                 ))}
 
                 {[...allDays.emptyDaysSet].map((item, index) => (
-                    <Text style={isDarkMode ? [styles.cell, {backgroundColor: '#635e5e'}] :  [styles.cell, {backgroundColor: '#c6c6c8'}]} key={index}>{item}</Text>
+                    <Text
+                        style={isDarkMode ? [styles.cell, {backgroundColor: '#635e5e'}] : [styles.cell, {backgroundColor: '#c6c6c8'}]}
+                        key={index}>{item}</Text>
                 ))}
 
-                {[...allDays.daysSet].map((item, index,day) => (
+                {[...allDays.daysSet].map((item, index, day) => (
 
-                    <Text style={[isDarkMode ? styles.cell : styles.cellWhite, isCurrentDay(item) && styles.today]}  key={index}>{item}</Text>
+                    <Text style={[isDarkMode ? styles.cell : styles.cellWhite, isCurrentDay(item) && styles.today]}
+                          key={index}
+
+                          onPress={async () => {
+                              const fullDate = prevMonth.date(Number(item)).format('YYYY-MM-DD'); // Собираем дату
+                              const dayId = await createIdDay(fullDate); // Передаем в insertDays именно дату в строке
+                              console.log('dayId', dayId, 'date:', fullDate);
+                              fetchDays();
+                              navigation.navigate('TasksList', { dayId ,darkMode });
+                          }}
+                    >{item}</Text>
                 ))}
 
                 {[...allDays.emptyDaysEndSet].map((item, index) => (
-                    <Text style={isDarkMode ? [styles.cell, {backgroundColor: '#635e5e'}] :  [styles.cell, {backgroundColor: '#c6c6c8'}]} key={index}>{item}</Text>
+                    <Text
+                        style={isDarkMode ? [styles.cell, {backgroundColor: '#635e5e'}] : [styles.cell, {backgroundColor: '#c6c6c8'}]}
+                        key={index}>{item}</Text>
                 ))}
-
 
 
                 {/*{allDays.map((item, index) => (*/}
@@ -157,20 +176,19 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: '#ffffff',
 
-        maxWidth:140,
-        minWidth:140,
-        maxHeight:70,
-        minHeight:70
+        maxWidth: 140,
+        minWidth: 140,
+        maxHeight: 70,
+        minHeight: 70
 
     },
     monthStyleWhite: {
         fontSize: 25,
         color: '#040303',
-        maxWidth:140,
-        minWidth:140,
-        maxHeight:70,
-        minHeight:70
-
+        maxWidth: 140,
+        minWidth: 140,
+        maxHeight: 70,
+        minHeight: 70
 
 
     },
@@ -178,14 +196,14 @@ const styles = StyleSheet.create({
         left: 100,
         fontSize: 35,
         color: '#ffffff',
-        marginHorizontal:15
+        marginHorizontal: 15
 
     },
     textButMonthUpWhite: {
         left: 100,
         fontSize: 35,
         color: '#020202',
-        marginHorizontal:15,
+        marginHorizontal: 15,
 
 
     },
@@ -194,16 +212,16 @@ const styles = StyleSheet.create({
         fontSize: 35,
         color: '#ffffff',
 
-    },textButMonthDownWhite: {
+    }, textButMonthDownWhite: {
         left: 80,
         fontSize: 35,
         color: '#050505',
 
 
     },
-    today:{
+    today: {
 
-        backgroundColor:'#e46a04'
+        backgroundColor: '#e46a04'
     }
 
 });
