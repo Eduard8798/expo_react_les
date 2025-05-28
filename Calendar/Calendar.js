@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import {Entypo} from "@expo/vector-icons";
 import {createTable, fetchDays, insertDays} from "./database";
 
-const Calendar = ({navigation}) => {
+const Calendar = ({navigation,setDarkMode,darkMode}) => {
 
     const [munthChange, setMunthChange] = useState(0);
 
@@ -43,6 +43,8 @@ const Calendar = ({navigation}) => {
     const switchStyleColor = () => {
         setColor(prevState => (prevState === 'white' ? 'black' : 'white'))
         setIsDarkMode(prev => !prev)
+        setDarkMode(prev => !prev)
+        console.log('dayMode',darkMode)
     }
 
     const isCurrentDay = (day) => {
@@ -100,7 +102,7 @@ const Calendar = ({navigation}) => {
                               const dayId = await createIdDay(fullDate); // Передаем в insertDays именно дату в строке
                               console.log('dayId', dayId, 'date:', fullDate);
                               fetchDays();
-                              navigation.navigate('TasksList', { dayId  });
+                              navigation.navigate('TasksList', { dayId ,darkMode });
                           }}
                     >{item}</Text>
                 ))}

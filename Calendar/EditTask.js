@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet,Text, TextInput, TouchableOpacity, View} from "react-native";
 
 const EditTask = ({navigation,route}) => {
-    const { changeTask, id, title } = route.params;
+    const { changeTask, id, title,darkMode } = route.params;
     const [taskText,setTaskText] = useState(title)
 
     const editTask = async () => {
@@ -14,8 +14,8 @@ const EditTask = ({navigation,route}) => {
     }, [taskText]);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Change your task:</Text>
+        <View style={darkMode? styles.container : styles.whiteContainer}>
+            <Text style={darkMode? styles.title : styles.whiteTitle}>Change your task:</Text>
             <TextInput
                 style={styles.input}
                 value={taskText}
@@ -35,10 +35,24 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        backgroundColor: '#0b0b0b',
+        //1
+    },
+    whiteContainer: {
+        flex: 1,
+        padding: 20,
         backgroundColor: '#f5f5f5',
         //1
     },
     title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+        color:'#faf9f9'
+        //1
+    },
+    whiteTitle: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,

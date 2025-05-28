@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Text,StyleSheet,TextInput, TouchableOpacity, View} from "react-native";
 
 const AddTask = ({navigation,route}) => {
-    const {onSave} = route.params;
+    const {onSave,darkMode} = route.params;
     const [taskText, setTaskText] = useState('');
 
     const addTask = async () => {
@@ -13,8 +13,8 @@ const AddTask = ({navigation,route}) => {
         navigation.goBack();
     }
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Add new Task </Text>
+        <View style={darkMode? styles.container : styles.whiteContainer}>
+            <Text style={darkMode? styles.title : styles.whiteTitle}>Add new Task </Text>
             <TextInput
                 style={styles.textArea}
                 placeholder="Enter your task details here..."
@@ -35,10 +35,24 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        backgroundColor: '#0b0b0b',
+
+    },
+    whiteContainer: {
+        flex: 1,
+        padding: 20,
         backgroundColor: '#f5f5f5',
-        //1
+
     },
     title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+        color:'#ffffff'
+        //1
+    },
+    whiteTitle: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
@@ -57,6 +71,12 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top',
     },
     saveButton: {
+        backgroundColor: '#300227',
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    whiteSaveButton: {
         backgroundColor: '#28a745',
         padding: 15,
         borderRadius: 5,

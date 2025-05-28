@@ -6,8 +6,8 @@ import {deleteTask, fetchTasks, insertTask, updateTask} from "./database";
 const TasksList = ({navigation,route}) => {
 const [text,setText] = useState('');
     const [tasks, setTasks] = useState([]);
-    const {dayId} = route.params;
-
+    const {dayId,darkMode} = route.params;
+console.log('darkModeTasksList',darkMode)
     const loadTasks = async () =>{
         const result = await fetchTasks(dayId);
         setTasks(result)
@@ -46,19 +46,19 @@ const [text,setText] = useState('');
 
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Tasks:</Text>
+        <View style={darkMode? styles.container : styles.whiteContainer }>
+            <Text style={darkMode? styles.title : styles.whiteTitle}>Tasks:</Text>
 
             {tasks.length === 0 ? <Text>Not Task</Text> : <FlatList
                 data={tasks}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({item}) => (
-                    <View style={styles.taskItemContainer}>
+                    <View style={darkMode? styles.taskItemContainer : styles.whiteTaskItemContainer}>
 
-                        <Text style={styles.taskText} numberOfLines={1}
+                        <Text style={darkMode? styles.taskText : styles.whiteTaskText} numberOfLines={1}
                         onPress={()=>navigation.navigate('EditTask',{changeTask,
                             id: item.id,
-                            title: item.title, })}>
+                            title: item.title,darkMode })}>
                             {item?.title || 'Нет текста'}
 
                         </Text>
@@ -73,16 +73,21 @@ const [text,setText] = useState('');
 
             }
             <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => navigation.navigate('AddTask', {onSave: saveTasks})}
+                style={darkMode? styles.addButton : styles.whiteAddButton}
+                onPress={() => navigation.navigate('AddTask', {onSave: saveTasks,darkMode})}
             >
-                <Text style={styles.addButtonText}>Add Task</Text>
+                <Text style={darkMode? styles.addButtonText : styles.whiteAddButtonText}>Add Task</Text>
             </TouchableOpacity>
         </View>
     );
 };
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: '#0b0b0b',
+    }
+    ,whiteContainer: {
         flex: 1,
         padding: 20,
         backgroundColor: '#f5f5f5',
@@ -92,8 +97,32 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
+        color:'#fafafa'
+    },
+    whiteTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+
     },
     taskItemContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginVertical: 5,
+        paddingHorizontal: 10,
+        backgroundColor: '#616060',
+        borderRadius: 5,
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        elevation: 2,
+
+        //1
+    },
+    whiteTaskItemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -106,14 +135,30 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 5,
         elevation: 2,
+
         //1
     },
     taskText: {
+        fontSize: 16,
+        padding:8,
+        color:'#fff5f5'
+    },
+    whiteTaskText: {
         fontSize: 16,
         padding:8
         //1
     },
     addButton: {
+        position: 'absolute',
+        bottom: 20,
+        left: 20,
+        right: 20,
+        padding: 15,
+        backgroundColor: '#300227',
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    whiteAddButton: {
         position: 'absolute',
         bottom: 20,
         left: 20,
@@ -125,11 +170,14 @@ const styles = StyleSheet.create({
     },
 
     addButtonText: {
+        color: '#4a8df8',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    whiteAddButtonText: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
-
-
     },
 
 })
