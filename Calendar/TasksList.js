@@ -25,7 +25,8 @@ console.log('darkModeTasksList',darkMode)
 
             return;
         }
-        setTasks(prev => [...prev, {insertedId,title,dayId}]);
+        setTasks(prev => [...prev, {id: insertedId, title, dayId}]);
+
         await loadTasks();
 
     }
