@@ -3,13 +3,16 @@ import {StyleSheet, Text, View} from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import dayjs from 'dayjs';
 import {Entypo} from "@expo/vector-icons";
-import {createTable, fetchDays, insertDays} from "./database";
+import {createTable, fetchAllTasks, fetchDays, fetchTasks, insertDays} from "./database";
 
 const Calendar = ({navigation,setDarkMode,darkMode}) => {
+const [taskId,setTaskId] = useState([])
 
+const [dayTask,setDayTasks] = useState([])
     const [munthChange, setMunthChange] = useState(0);
 
     // const currentDay = dayjs();
+
     let today = dayjs();
     const prevMonth = today.subtract(munthChange, 'month');
     today = prevMonth
@@ -44,7 +47,7 @@ const Calendar = ({navigation,setDarkMode,darkMode}) => {
         setColor(prevState => (prevState === 'white' ? 'black' : 'white'))
         setIsDarkMode(prev => !prev)
         setDarkMode(prev => !prev)
-        console.log('dayMode',darkMode)
+
     }
 
     const isCurrentDay = (day) => {
@@ -52,16 +55,40 @@ const Calendar = ({navigation,setDarkMode,darkMode}) => {
         const dateToCheck = currentMonth.date(Number(day));
         return dayjs().isSame(dateToCheck, 'day');
     };
+
+
     useEffect(() => {
         createTable();
+        loadDays();
+        loadTaskNotId();
     }, []);
+    useEffect(() => {
+
+    }, []);
+
+
 
      const createIdDay = async (fullDate) => {
         return await insertDays(fullDate);
     };
 
-    const loadDays = async () =>{
-        return await fetchDays();
+    const loadDays = async () => {
+        const days = await fetchDays();
+        setDayTasks(days);
+        console.log('daysLoadays',days)
+    };
+    const loadTaskNotId = async () => {
+
+        const taskId = await fetchAllTasks();
+        setTaskId(taskId)
+        console.log('taskId',taskId)
+
+    }
+
+    const isTaskDay = (day) => {
+        const fullDate = prevMonth.date(Number(day)).format('YYYY-MM-DD'); // собираем дату вида "2025-05-01"
+        return dayTask.some(task => task.data === fullDate && taskId.some(t=> t.title !== '' && task.id === t.day_id));
+
     }
     return (
 
@@ -93,18 +120,23 @@ const Calendar = ({navigation,setDarkMode,darkMode}) => {
                 ))}
 
                 {[...allDays.daysSet].map((item, index, day) => (
-
-                    <Text style={[isDarkMode ? styles.cell : styles.cellWhite, isCurrentDay(item) && styles.today]}
-                          key={index}
+<View key={index}>
+                    <Text style={[isDarkMode ? styles.cell : styles.cellWhite,
+                        isCurrentDay(item) && styles.today,]}
+                          // key={index}
 
                           onPress={async () => {
                               const fullDate = prevMonth.date(Number(item)).format('YYYY-MM-DD'); // Собираем дату
                               const dayId = await createIdDay(fullDate); // Передаем в insertDays именно дату в строке
-                              console.log('dayId', dayId, 'date:', fullDate);
+                              console.log('isCurrentDay()', item);
                               fetchDays();
+                              loadDays();
                               navigation.navigate('TasksList', { dayId ,darkMode });
                           }}
-                    >{item}</Text>
+                    >{item}
+                   </Text>
+    {isTaskDay(item) ?  <View style={styles.taskDay}/> : null}
+    </View>
                 ))}
 
                 {[...allDays.emptyDaysEndSet].map((item, index) => (
@@ -222,6 +254,14 @@ const styles = StyleSheet.create({
     today: {
 
         backgroundColor: '#e46a04'
+    },
+    taskDay:{
+        backgroundColor: '#a80101',
+        padding:2,
+        maxWidth:3,
+        minHeight:3,
+        left:22,
+        borderRadius:100
     }
 
 });

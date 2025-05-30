@@ -105,6 +105,17 @@ export const fetchTasks = async (dayId) => {
     }
 }
 
+export const fetchAllTasks = async () => {
+    const database = await openDatabase();
+    try {
+        const allRows = await database.getAllAsync('SELECT * FROM tasks ');
+        console.log('All tasks:', allRows);
+        return allRows;
+    } catch (e) {
+        console.log('Error fetching tasks:', e)
+    }
+}
+
 export const updateTask = async (id,title) => {
     const database = await openDatabase();
     if (!id || !title) {
