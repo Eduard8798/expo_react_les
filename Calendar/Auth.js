@@ -1,39 +1,67 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {TextInput, View, StyleSheet, Text, TouchableOpacity} from "react-native";
 
 import {AuthClient} from "./CalendarList";
+import {changeLanguage, loadLanguage} from "./i18n";
+import {useTranslation} from "react-i18next";
+import * as Localization from "expo-localization";
 
 const Auth = ({AuthClient}) => {
+    useEffect(() => {
+        startLang();
+    }, []);
 
-    const login = async () =>{
-    await AuthClient(false)
+    const startLang = async () => {
+        await loadLanguage();
+    }
+    startLang();
+
+    const {t} = useTranslation()
+    const locales = Localization.getLocales();
+
+    const handleLanguageChanges = async (lang) => {
+        await changeLanguage(lang);
     }
 
-    return  (
-        <View style={styles.container}>
-            <Text style={styles.header}>Welcome</Text>
 
+    const login = async () => {
+        await AuthClient(false)
+    }
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.header}>{t('welcome')}</Text>
+            <View style={styles.languageBox}>
+                <Text style={styles.buttonLanguage}
+                onPress={()=> handleLanguageChanges('en')}
+                >EN</Text>
+                <Text style={styles.buttonLanguage}
+                      onPress={()=> handleLanguageChanges('ua')}
+                >UA</Text>
+            </View>
             <TextInput
-                placeholder="Enter login"
+                placeholder={t('enter_login')}
                 style={styles.input}
                 placeholderTextColor="#888"
             />
             <TextInput
-                placeholder="Enter password"
+                placeholder={t('enter_password')}
                 style={styles.input}
                 secureTextEntry
                 placeholderTextColor="#888"
             />
 
+
             <View style={styles.buttonRow}>
                 <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Registration</Text>
+                    <Text style={styles.buttonText}>{t('registration')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.button}>
                     <Text style={styles.buttonText}
-                    onPress={login}>Login</Text>
+                          onPress={login}>{t('login')}</Text>
                 </TouchableOpacity>
+
             </View>
         </View>
     );
@@ -82,6 +110,22 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
     },
+    languageBox: {
+        flexDirection: 'row',
+
+
+    },
+    buttonLanguage: {
+        padding: 4,
+        backgroundColor: '#af8989',
+        margin: 13,
+        borderRadius: 8,
+        width:40,
+        textAlign:'center',
+        color:'#ffffff'
+
+
+    }
 });
 
 export default Auth;
