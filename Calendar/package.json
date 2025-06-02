@@ -16,9 +16,12 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "expo": "~52.0.37",
+    "expo-localization": "^16.1.5",
     "expo-sqlite": "^15.2.10",
     "expo-status-bar": "~2.0.1",
+    "i18next": "^25.2.1",
     "react": "18.3.1",
+    "react-i18next": "^15.5.2",
     "react-native": "0.76.7"
   },
   "devDependencies": {

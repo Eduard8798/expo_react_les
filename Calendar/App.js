@@ -22,6 +22,7 @@ const App = () => {
             <Stack.Screen name={'AddTask'} component={AddTask}/>
             <Stack.Screen name={'EditTask'} component={EditTask}/>
             <Stack.Screen name={'Auth'} component={Auth}/>
+
         </Stack.Navigator>
     </NavigationContainer>
     );
