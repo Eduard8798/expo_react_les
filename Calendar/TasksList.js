@@ -2,8 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {Text, View, StyleSheet, FlatList, TouchableOpacity} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {deleteTask, fetchTasks, insertTask, updateTask} from "./database";
+import {useTranslation} from "react-i18next";
 
 const TasksList = ({navigation,route}) => {
+    const {t} = useTranslation();
+
 const [text,setText] = useState('');
     const [tasks, setTasks] = useState([]);
     const {dayId,darkMode} = route.params;
@@ -48,9 +51,9 @@ console.log('darkModeTasksList',darkMode)
 
     return (
         <View style={darkMode? styles.container : styles.whiteContainer }>
-            <Text style={darkMode? styles.title : styles.whiteTitle}>Tasks:</Text>
+            <Text style={darkMode? styles.title : styles.whiteTitle}>{t('tasks_label')}</Text>
 
-            {tasks.length === 0 ? <Text>Not Task</Text> : <FlatList
+            {tasks.length === 0 ? <Text>{t('no_tasks')}</Text> : <FlatList
                 data={tasks}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({item}) => (
@@ -77,7 +80,7 @@ console.log('darkModeTasksList',darkMode)
                 style={darkMode? styles.addButton : styles.whiteAddButton}
                 onPress={() => navigation.navigate('AddTask', {onSave: saveTasks,darkMode})}
             >
-                <Text style={darkMode? styles.addButtonText : styles.whiteAddButtonText}>Add Task</Text>
+                <Text style={darkMode? styles.addButtonText : styles.whiteAddButtonText}>{t('add_task_button')}</Text>
             </TouchableOpacity>
         </View>
     );

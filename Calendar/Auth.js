@@ -1,24 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {TextInput, View, StyleSheet, Text, TouchableOpacity} from "react-native";
+import React from 'react';
+import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 
 import {AuthClient} from "./CalendarList";
-import {changeLanguage, loadLanguage} from "./i18n";
+import {changeLanguage} from "./i18n";
 import {useTranslation} from "react-i18next";
-import * as Localization from "expo-localization";
 
 const Auth = ({AuthClient}) => {
-    useEffect(() => {
-        startLang();
-    }, []);
-
-    const startLang = async () => {
-        await loadLanguage();
-    }
-    startLang();
 
     const {t} = useTranslation()
-    const locales = Localization.getLocales();
-
     const handleLanguageChanges = async (lang) => {
         await changeLanguage(lang);
     }
