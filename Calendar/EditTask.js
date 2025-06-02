@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet,Text, TextInput, TouchableOpacity, View} from "react-native";
+import {useTranslation} from "react-i18next";
 
 const EditTask = ({navigation,route}) => {
+    const {t} = useTranslation();
+
     const { changeTask, id, title,darkMode } = route.params;
     const [taskText,setTaskText] = useState(title)
 
@@ -15,7 +18,7 @@ const EditTask = ({navigation,route}) => {
 
     return (
         <View style={darkMode? styles.container : styles.whiteContainer}>
-            <Text style={darkMode? styles.title : styles.whiteTitle}>Change your task:</Text>
+            <Text style={darkMode? styles.title : styles.whiteTitle}>{t('change_task')}</Text>
             <TextInput
                 style={styles.input}
                 value={taskText}
@@ -26,7 +29,7 @@ const EditTask = ({navigation,route}) => {
                 style={styles.addButton}
                 onPress={editTask}
             >
-                <Text style={styles.addButtonText}>Save</Text>
+                <Text style={styles.addButtonText}>{t('save_edit_task')}</Text>
             </TouchableOpacity>
         </View>
     );

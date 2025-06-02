@@ -3,5 +3,16 @@
   "enter_login": "Enter login",
   "enter_password": "Enter password",
   "registration": "Registration",
-  "login": "Login"
+  "login": "Login",
+  "add_task": "Add new Task",
+  "task_placeholder": "Enter your task details here...",
+  "save_task": "Save Task",
+  "empty_task_alert": "Task text cannot be empty",
+  "tasks_label": "Tasks:",
+  "no_tasks": "No tasks",
+  "add_task_button": "Add Task",
+  "week": ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+  "change_task": "Change your task:",
+  "save_edit_task": "Save"
+
 }

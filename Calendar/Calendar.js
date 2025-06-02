@@ -4,8 +4,10 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import dayjs from 'dayjs';
 import {Entypo} from "@expo/vector-icons";
 import {createTable, fetchAllTasks, fetchDays, fetchTasks, insertDays} from "./database";
+import {useTranslation} from "react-i18next";
 
 const Calendar = ({navigation,setDarkMode,darkMode}) => {
+    const {t} = useTranslation()
 const [taskId,setTaskId] = useState([])
 
 const [dayTask,setDayTasks] = useState([])
@@ -21,7 +23,8 @@ const [dayTask,setDayTasks] = useState([])
     const lastDayOfMonth = today.date(daysInMonth).day();
     const days = Array.from({length: daysInMonth}, (_, i) => today.date(i + 1).format('DD'));
 
-    const week = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    // const week = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    const week= t('week', { returnObjects: true });
 
     const daysInPrevMonth = prevMonth.daysInMonth();
     const emptyDays = Array.from({length: firstDayOfMonth}, (_, i) => {

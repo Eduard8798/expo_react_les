@@ -1,23 +1,26 @@
 import React, {useState} from 'react';
 import {Text,StyleSheet,TextInput, TouchableOpacity, View} from "react-native";
+import {useTranslation} from "react-i18next";
 
 const AddTask = ({navigation,route}) => {
     const {onSave,darkMode} = route.params;
     const [taskText, setTaskText] = useState('');
 
+    const {t} = useTranslation()
+
     const addTask = async () => {
         if (!taskText.trim()) {
-            alert('Task text cannot be empty')
+            alert(t('empty_task_alert'))
         }
         await onSave(taskText);
         navigation.goBack();
     }
     return (
         <View style={darkMode? styles.container : styles.whiteContainer}>
-            <Text style={darkMode? styles.title : styles.whiteTitle}>Add new Task </Text>
+            <Text style={darkMode? styles.title : styles.whiteTitle}>{t('add_task')}</Text>
             <TextInput
                 style={styles.textArea}
-                placeholder="Enter your task details here..."
+                placeholder={t('task_placeholder')}
                 value={taskText}
                 onChangeText={setTaskText}
                 multiline
@@ -26,7 +29,7 @@ const AddTask = ({navigation,route}) => {
                 style={styles.saveButton}
                 onPress={addTask}
             >
-                <Text style={styles.saveButtonText}>Save Task</Text>
+                <Text style={styles.saveButtonText}>{t('save_task')}</Text>
             </TouchableOpacity>
         </View>
     );
