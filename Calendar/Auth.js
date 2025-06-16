@@ -1,18 +1,12 @@
 import React from 'react';
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-
 import {AuthClient} from "./CalendarList";
-import {changeLanguage} from "./i18n";
 import {useTranslation} from "react-i18next";
+
 
 const Auth = ({AuthClient}) => {
 
     const {t} = useTranslation()
-    const handleLanguageChanges = async (lang) => {
-        await changeLanguage(lang);
-    }
-
-
     const login = async () => {
         await AuthClient(false)
     }
@@ -20,14 +14,6 @@ const Auth = ({AuthClient}) => {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>{t('welcome')}</Text>
-            <View style={styles.languageBox}>
-                <Text style={styles.buttonLanguage}
-                onPress={()=> handleLanguageChanges('en')}
-                >EN</Text>
-                <Text style={styles.buttonLanguage}
-                      onPress={()=> handleLanguageChanges('ua')}
-                >UA</Text>
-            </View>
             <TextInput
                 placeholder={t('enter_login')}
                 style={styles.input}
@@ -104,16 +90,17 @@ const styles = StyleSheet.create({
 
 
     },
-    buttonLanguage: {
+
+    flagComponents:{
         padding: 4,
         backgroundColor: '#af8989',
         margin: 13,
         borderRadius: 8,
         width:40,
         textAlign:'center',
-        color:'#ffffff'
-
-
+        color:'#ffffff',
+        maxWidth:30,
+        maxHeight:30
     }
 });
 

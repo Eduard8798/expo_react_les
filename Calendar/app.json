@@ -1,10 +1,13 @@
 {
   "expo": {
-    "name": "ex_3_auth",
-    "slug": "ex-3-auth",
+    "name": "Calendar",
+    "slug": "Calendar",
     "version": "1.0.0",
-    "sdkVersion": "52.0.0",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {

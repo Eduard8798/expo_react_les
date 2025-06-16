@@ -1,68 +1,31 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Text, View, StyleSheet, FlatList, TouchableOpacity} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
-import {deleteTask, fetchTasks, insertTask, updateTask} from "./database";
 import {useTranslation} from "react-i18next";
 
-const TasksList = ({navigation,route}) => {
+const DisturbanceListScreen = ({navigation, route}) => {
     const {t} = useTranslation();
 
-const [text,setText] = useState('');
-    const [tasks, setTasks] = useState([]);
-    const {dayId,darkMode} = route.params;
-
-    const loadTasks = async () =>{
-        const result = await fetchTasks(dayId);
-        setTasks(result)
-    }
-
-    const deleteTaskItem = async (id) => {
-        await deleteTask(id);
-        const updatedTasks = tasks.filter(task => task.id !== id)
-        setTasks(updatedTasks);
-
-    }
-    const saveTasks = async (title) => {
-        const insertedId = await insertTask(title, dayId);
-        if (!insertedId) {
-
-            return;
-        }
-        setTasks(prev => [...prev, {id: insertedId, title, dayId}]);
-
-        await loadTasks();
-
-    }
-    const changeTask = async (id,title ) => {
-         const newChengeTask = await updateTask(id,title);
-        // setTasks(prev => [...prev, {id,title}]);
-        setTasks(prev =>
-            prev.map(task => task.id === id ? { ...task, title } : task)
-        );
-        await loadTasks();
-    }
-
-
-    useEffect(() => {
-        loadTasks();
-
-    }, []);
-
+    // const [text,setText] = useState('');
+    const [tasks, setTasks] = useState([{id: 1, title: 'Task'}]);
+    const {fullDate, darkMode} = route.params;
 
     return (
-        <View style={darkMode? styles.container : styles.whiteContainer }>
-            <Text style={darkMode? styles.title : styles.whiteTitle}>{t('tasks_label')}</Text>
+        <View style={darkMode ? styles.container : styles.whiteContainer}>
+            <Text style={darkMode ? styles.title : styles.whiteTitle}>{t('tasks_label')}</Text>
 
             {tasks.length === 0 ? <Text>{t('no_tasks')}</Text> : <FlatList
                 data={tasks}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({item}) => (
-                    <View style={darkMode? styles.taskItemContainer : styles.whiteTaskItemContainer}>
+                    <View style={darkMode ? styles.taskItemContainer : styles.whiteTaskItemContainer}>
 
-                        <Text style={darkMode? styles.taskText : styles.whiteTaskText} numberOfLines={1}
-                        onPress={()=>navigation.navigate('EditTask',{changeTask,
-                            id: item.id,
-                            title: item.title,darkMode })}>
+                        <Text style={darkMode ? styles.taskText : styles.whiteTaskText} numberOfLines={1}
+                              onPress={() => navigation.navigate('EditTask', {
+                                  changeTask,
+                                  id: item.id,
+                                  title: item.title, darkMode
+                              })}>
                             {item?.title || 'Нет текста'}
 
                         </Text>
@@ -77,10 +40,17 @@ const [text,setText] = useState('');
 
             }
             <TouchableOpacity
-                style={darkMode? styles.addButton : styles.whiteAddButton}
-                onPress={() => navigation.navigate('AddTask', {onSave: saveTasks,darkMode})}
+                style={darkMode ? styles.addButton : styles.whiteAddButton}
+                onPress={() => {
+                    console.log('fullDateList', fullDate)
+                    navigation.navigate('DisturbanceCreate', {fullDate}
+
+                        // {onSave: saveTasks,darkMode}
+                    )
+                }}
             >
-                <Text style={darkMode? styles.addButtonText : styles.whiteAddButtonText}>{t('add_task_button')}</Text>
+                <Text
+                    style={darkMode ? styles.addButtonText : styles.whiteAddButtonText}>{t('add_Disturbance_button')}</Text>
             </TouchableOpacity>
         </View>
     );
@@ -91,7 +61,7 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: '#0b0b0b',
     }
-    ,whiteContainer: {
+    , whiteContainer: {
         flex: 1,
         padding: 20,
         backgroundColor: '#f5f5f5',
@@ -101,7 +71,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
-        color:'#fafafa'
+        color: '#fafafa'
     },
     whiteTitle: {
         fontSize: 24,
@@ -144,12 +114,12 @@ const styles = StyleSheet.create({
     },
     taskText: {
         fontSize: 16,
-        padding:8,
-        color:'#fff5f5'
+        padding: 8,
+        color: '#fff5f5'
     },
     whiteTaskText: {
         fontSize: 16,
-        padding:8
+        padding: 8
         //1
     },
     addButton: {
@@ -186,4 +156,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default TasksList;
+export default DisturbanceListScreen;
