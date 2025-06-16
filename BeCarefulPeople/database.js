@@ -129,22 +129,7 @@ export const deleteDisturbance = async (id) => {
 
 //user
 
-export const createUser = (name, surname, email, phone, password) => {
-    db.transaction(tx => {
-        tx.executeSql(
-            `INSERT INTO user (name, surname, email, phone, password)
-       VALUES (?, ?, ?, ?, ?);`,
-            [name, surname, email, phone, password],
-            (_, result) => {
-                console.log('Пользователь добавлен, ID:', result.insertId);
-            },
-            (_, error) => {
-                console.log('Ошибка при добавлении пользователя:', error);
-                return false;
-            }
-        );
-    });
-};
+
 
 
 
