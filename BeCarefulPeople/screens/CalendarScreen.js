@@ -8,6 +8,7 @@ import {createTable} from "../database";
 
 const CalendarScreen = ({navigation, setDarkMode, darkMode}) => {
     const {t} = useTranslation()
+
     const [taskId, setTaskId] = useState([])
 
     const [dayTask, setDayTasks] = useState([])
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 1,
         left: 15,
-        marginTop: 50
+        marginTop: 130
     },
     allBorder: {
         backgroundColor: '#424141',

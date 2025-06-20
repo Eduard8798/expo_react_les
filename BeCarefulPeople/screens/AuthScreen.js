@@ -17,7 +17,7 @@ const AuthScreen = ({ setIsAuth }) => {
             {isLoginMode ? (
                 <LoginForm setIsAuth={setIsAuth} />
             ) : (
-                <RegisterForm />
+                <RegisterForm setIsAuth={setIsAuth}/>
             )}
 
             <TouchableOpacity

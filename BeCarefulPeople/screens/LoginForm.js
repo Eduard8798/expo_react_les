@@ -1,19 +1,43 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import {fetchuserid} from "../database";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginForm = ({ setIsAuth }) => {
     const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (email && password) {
-            setIsAuth(true);
-        } else {
-            alert(t('fill_fields'));
+
+            const id = await fetchuserid(email);
+
+            if (id && Array.isArray(id) && id.length > 0) {
+                const userId = id[0].id; // взять первый объект и достать id
+                await AsyncStorage.setItem('userId', userId.toString());
+                console.log('✅ userId сохранён в AsyncStorage:', userId);
+                setIsAuth(true);
+            } else {
+                alert(t('user_not_found'));
+            }
         }
+
     };
+
+    useEffect( () => {
+        const getUserId = async () => {
+            try {
+                const id = await AsyncStorage.getItem('userId');
+                console.log('idUser', id);
+            } catch (e) {
+                console.log('Ошибка при получении userId', e);
+            }
+        };
+
+        getUserId();
+    }, []);
 
     return (
         <>

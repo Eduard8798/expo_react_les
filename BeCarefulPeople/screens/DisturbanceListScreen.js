@@ -1,36 +1,73 @@
-import React, {useState} from 'react';
-import {Text, View, StyleSheet, FlatList, TouchableOpacity} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {useTranslation} from "react-i18next";
+import {
+    deleteDisturbance,
+    fetchAllDisturbance, fetchDisturbance, fetchDisturbanceId,
+    fetchDisturbanceItem,
+    fetchDisturbanceItemNotImg,
+    fetchImg
+} from "../database";
+import {useFocusEffect} from "@react-navigation/native";
 
 const DisturbanceListScreen = ({navigation, route}) => {
     const {t} = useTranslation();
 
-    // const [text,setText] = useState('');
-    const [tasks, setTasks] = useState([{id: 1, title: 'Task'}]);
+    const [list, setList] = useState(null);
+    const [tDisturbance, setTDisturbance] = useState(null);
     const {fullDate, darkMode} = route.params;
+
+    const fetchAllDist = async () => {
+        const result = await fetchDisturbance(fullDate);
+        setTDisturbance(result);
+    }
+
+    const deleteDist = async (id) => {
+        await deleteDisturbance(id);
+        const upDate = tDisturbance.filter(item => item.id !== id);
+
+        setTDisturbance(upDate)
+
+    }
+    const updateList = () =>{
+        setList(tDisturbance)
+    }
+
+
+
+    useEffect(() => {
+        fetchAllDist();
+    }, [])
+
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchAllDist();
+        }, [])
+    );
 
     return (
         <View style={darkMode ? styles.container : styles.whiteContainer}>
             <Text style={darkMode ? styles.title : styles.whiteTitle}>{t('tasks_label')}</Text>
 
-            {tasks.length === 0 ? <Text>{t('no_tasks')}</Text> : <FlatList
-                data={tasks}
+            {(tDisturbance?.length ?? 0) === 0 ? <Text>{t('no_tasks')}</Text> : <FlatList
+                data={tDisturbance}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({item}) => (
                     <View style={darkMode ? styles.taskItemContainer : styles.whiteTaskItemContainer}>
 
                         <Text style={darkMode ? styles.taskText : styles.whiteTaskText} numberOfLines={1}
-                              onPress={() => navigation.navigate('EditTask', {
-                                  changeTask,
-                                  id: item.id,
-                                  title: item.title, darkMode
+                              onPress={() => navigation.navigate('DisturbanceScreen', {
+
+                                   id: item.id,
+
+                                  // title: item.title, darkMode
                               })}>
                             {item?.title || 'Нет текста'}
 
                         </Text>
 
-                        <TouchableOpacity onPress={() => deleteTaskItem(item.id)}>
+                        <TouchableOpacity onPress={() => deleteDist(item.id)}>
                             <Ionicons name="trash-outline" size={24} color="#ff5c5c"/>
                         </TouchableOpacity>
 
@@ -42,10 +79,7 @@ const DisturbanceListScreen = ({navigation, route}) => {
             <TouchableOpacity
                 style={darkMode ? styles.addButton : styles.whiteAddButton}
                 onPress={() => {
-                    console.log('fullDateList', fullDate)
                     navigation.navigate('DisturbanceCreate', {fullDate}
-
-                        // {onSave: saveTasks,darkMode}
                     )
                 }}
             >

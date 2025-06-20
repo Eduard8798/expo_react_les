@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import {createTable, insertUser} from "../database";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const RegisterForm = () => {
+const RegisterForm = ({ setIsAuth}) => {
     const { t } = useTranslation();
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
@@ -10,14 +12,37 @@ const RegisterForm = () => {
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleRegister = () => {
+
+
+    const handleRegister = async () => {
+
         if (name && surname && email && phone && password) {
-            alert(t('registration_success'));
-            // Здесь ты можешь отправить данные на сервер
+            try {
+                const userId = await insertUser(name, surname, email, phone, password);
+                if (userId) {
+                    await AsyncStorage.setItem('userId',userId.toString())
+
+                    alert(t('registration_success'));
+                    setIsAuth(true);
+                    // тут можно сохранить userId или перейти на главный экран
+                }
+            } catch (e) {
+                // например, если email уже существует
+                alert(e.toString());
+            }
         } else {
             alert(t('fill_fields'));
         }
     };
+    const createTableUser = async () =>{
+        await createTable();
+    }
+
+    useEffect(()=>{
+        createTableUser();
+    },[])
+
+
 
     return (
         <>

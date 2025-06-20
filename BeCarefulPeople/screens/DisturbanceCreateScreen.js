@@ -4,6 +4,8 @@ import DisturbanceLocationScreen from "./DisturbanceLocationScreen";
 import DisturbancePhotoScreen from "./DisturbancePhotoScreen";
 import DisturbanceDescriptionScreen from "./DisturbanceDescriptionScreen";
 import {insertDisturbance} from "../database";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as FileSystem from "expo-file-system";
 
 const DisturbanceCreateScreen = ({navigation,route}) => {
 
@@ -13,6 +15,11 @@ const DisturbanceCreateScreen = ({navigation,route}) => {
     const [locationData,setLocationData] = useState(null)
     const geoString = JSON.stringify(locationData);
 
+    const [idUser,setIdUser] = useState(null)
+
+
+
+
 
     const createDist = async () => {
 
@@ -20,10 +27,15 @@ const DisturbanceCreateScreen = ({navigation,route}) => {
             console.log('❌ Недостаточно данных для создания записи');
             return;
         }
+        // байты для БЛОБ БД SQLite
+
 
         const geoString = JSON.stringify(locationData); // строка из обьекта
-        const createDis = await insertDisturbance(descriptionData.text,descriptionData.category,photoData,fullDate,geoString,'1')
+        const createDis = await insertDisturbance(descriptionData.text,descriptionData.category,photoData,fullDate,geoString,idUser)
         console.log('✅ Нарушение создано:');
+
+
+
     };
 
 
@@ -33,10 +45,16 @@ const DisturbanceCreateScreen = ({navigation,route}) => {
         console.log('📝 descriptionData:', descriptionData);
         console.log(' fullDate:', fullDate);
         console.log('📷 photoData:', photoData);
+        console.log('idTest', idUser);
 
     }, [photoData, descriptionData, locationData]);
 
-
+    useEffect(() => {
+        AsyncStorage.getItem('userId').then(id => {
+            console.log('userId из AsyncStorage при монтировании:', id);
+            setIdUser(id);
+        });
+    }, []);
 
     return (
         <View style={{flex:1}}>
@@ -49,7 +67,10 @@ const DisturbanceCreateScreen = ({navigation,route}) => {
                 style={styles.addButton }
                 // onPress={() => navigation.navigate('DisturbanceCreate'
                 // )
-                onPress={()=> createDist()
+                onPress={()=> {
+                    createDist();
+                    navigation.goBack();
+                }
                 }
             >
                 <Text style={ styles.addButtonText }>ADD Disturbance</Text>

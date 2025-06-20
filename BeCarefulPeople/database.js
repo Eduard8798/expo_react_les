@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 export const openDatabase = async () => {
-    return await SQLite.openDatabaseAsync('newdaydatabasebepeople.db');
+    return await SQLite.openDatabaseAsync('newdaydatabasebepeopletwo.db');
 }
 
 
@@ -17,7 +17,7 @@ export const createTable = async () => {
              (id INTEGER PRIMARY KEY AUTOINCREMENT,
                name TEXT,
                 surname TEXT,
-                email TEXT,
+                email TEXT UNIQUE,
                 phone TEXT,
                 password TEXT
              );
@@ -26,7 +26,7 @@ export const createTable = async () => {
             (id INTEGER PRIMARY KEY AUTOINCREMENT,
              title TEXT NOT NULL,
              category TEXT NOT NULL,
-             urlImage   BLOB NOT NULL,
+             urlImage TEXT NOT NULL,
              date TEXT NOT NULL,
              geolocation TEXT NOT NULL,
              userId INTEGER NOT NULL ,
@@ -44,18 +44,15 @@ export const insertDisturbance = async (titleDis,categoryDis,urlImageDis,dateCal
 
     const database = await openDatabase();
 
+
     try {
 
         const insertResult = await database.runAsync(
             'INSERT INTO disturbance (title,category,urlImage,date,geolocation,userId) VALUES (?,?,?,?,?,?)',
             [titleDis,categoryDis,urlImageDis,dateCalendar,geolocationDis,userId]
         );
-
         console.log('Create Disturbance',insertResult)
-
         return insertResult.lastInsertRowId;
-
-
     }
     catch (e){
         console.log('error insertDisturbance',e)
@@ -83,6 +80,89 @@ export const fetchDisturbance = async (dateCalendar) => {
     }
 };
 
+export const fetchAllDisturbance = async () => {
+    const database = await openDatabase();
+
+    try {
+        const allRows = await database.getAllAsync(
+            `SELECT * FROM disturbance `
+
+        );
+        console.log('Fetch fetchAllDisturbance ', allRows )
+        return allRows;
+    } catch (e) {
+        console.log('error fetchDisturbance', e);
+        return [];
+    }
+};
+
+export const fetchDisturbanceId = async (id) => {
+    const database = await openDatabase();
+
+    try {
+        const result = await database.getAllAsync(
+            `SELECT * FROM disturbance WHERE id = ?`,
+            [id]
+
+        );
+        console.log('Fetch item Disturbance ', result )
+        return result;
+    } catch (e) {
+        console.log('error Fetch item Disturbance', e);
+        return [];
+    }
+};
+
+export const fetchImg = async (id) => {
+    const database = await openDatabase();
+
+    try {
+        const result = await database.getAllAsync(
+            `SELECT urlImage FROM disturbance WHERE id = ?`,
+            [id]
+
+        );
+        console.log('Fetch Img Disturbance ', result )
+        return result;
+    } catch (e) {
+        console.log('error Fetch img Disturbance', e);
+        return [];
+    }
+};
+
+export const fetchDisturbanceItem = async (id) => {
+    const database = await openDatabase();
+
+    try {
+        const result = await database.getAllAsync(
+            `SELECT id, title, category, date, geolocation FROM disturbance WHERE id = ?`,
+            [id]
+
+        );
+        console.log('fetchDisturbanceItem ', result )
+        return result;
+    } catch (e) {
+        console.log('error fetchDisturbanceItem', e);
+        return [];
+    }
+};
+
+export const fetchDisturbanceItemNotImg = async () => {
+    const database = await openDatabase();
+
+    try {
+        const result = await database.getAllAsync(
+            `SELECT id, title, category, geolocation FROM disturbance`,
+
+
+        );
+        console.log('fetchDisturbanceItemNotImg ', result )
+        return result;
+    } catch (e) {
+        console.log('error fetchDisturbanceItemNotImg', e);
+        return [];
+    }
+};
 
 export const updateDisturbance = async (id, updatedData) => {
     const database = await openDatabase();
@@ -131,10 +211,63 @@ export const deleteDisturbance = async (id) => {
 
 
 
+export const insertUser = async (nameUser,surnameUser,emailUser,phoneUser,passwordUser) => {
+
+    const database = await openDatabase();
+
+    try {
+
+        const insertResult = await database.runAsync(
+            'INSERT INTO user (name,surname,email,phone,password) VALUES (?,?,?,?,?)',
+            [nameUser,surnameUser,emailUser,phoneUser,passwordUser]
+        );
+
+        console.log('Create User',insertResult)
+
+        return insertResult.lastInsertRowId;
 
 
+    }
+    catch (e){
+        console.log('error insert New User',e)
+    }
+}
+
+export const fetchuserid = async (email) => {
+    const database = await openDatabase();
+
+    if (!email) {
+        console.log("error email or email empty");
+        return [];
+    }
+
+    try {
+        const allRows = await database.getAllAsync(
+            `SELECT id FROM user WHERE email = ?`,
+            [email]
+        );
+        console.log('Fetch user id ', allRows )
+        return allRows;
+    } catch (e) {
+        console.log('error Fetch user', e);
+        return [];
+    }
+}
 
 
+export const fetchalluser = async () => {
+    const database = await openDatabase();
+    try {
+        const allRows = await database.getAllAsync(
+            `SELECT * FROM user `
+        );
+        console.log('Fetch All user  ', allRows )
+        return allRows;
+    } catch (e) {
+        console.log('error Fetch All user', e);
+        return [];
+    }
+}
 
 
 

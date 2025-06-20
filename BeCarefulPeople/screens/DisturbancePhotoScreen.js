@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as FileSystem from 'expo-file-system';
 
 const DisturbancePhotoScreen = ({setPhotoData}) => {
 
@@ -61,14 +60,7 @@ const DisturbancePhotoScreen = ({setPhotoData}) => {
             urlPath = result.assets[0].uri
             setImage(urlPath)
 
-            // байты для БЛОБ БД SQLite
-            const base64Image = await FileSystem.readAsStringAsync(urlPath, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
-            const byteArray = Uint8Array.from(atob(base64Image), char => char.charCodeAt(0));
 
-            setPhotoData(byteArray.length);
-            // байты для БЛОБ
         }
     }
 
@@ -95,7 +87,7 @@ const DisturbancePhotoScreen = ({setPhotoData}) => {
                 }
             )
             const data = await response.json();
-            if (data.secure_url){
+            if (data.secure_url) {
                 console.log('Uploaded Image:');
                 console.log(data.secure_url)
                 setUploadedUrl(data.secure_url); // сохраняем URL в состояние
@@ -103,10 +95,12 @@ const DisturbancePhotoScreen = ({setPhotoData}) => {
                 try {
                     await AsyncStorage.setItem('uploadedImageUrl', data.secure_url);
                     console.log('URL saved to AsyncStorage');
+                    setPhotoData(data.secure_url)
+                    console.log('URL saved to PhotoData => create ');
                 } catch (e) {
                     console.error('Failed to save URL to AsyncStorage', e);
                 }
-            }else{
+            } else {
                 console.error(data)
             }
         } catch (error) {
@@ -114,7 +108,7 @@ const DisturbancePhotoScreen = ({setPhotoData}) => {
         }
     }
     const handleOpenCamera = async () => {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        const {status} = await ImagePicker.requestCameraPermissionsAsync();
         if (status !== 'granted') {
             Alert.alert('Ошибка', 'Нужен доступ к камере');
             return;
@@ -131,7 +125,7 @@ const DisturbancePhotoScreen = ({setPhotoData}) => {
             setImage(urlPath);
             setPhotoData(urlPath) // props up for create
         }
-        if (!urlPath){
+        if (!urlPath) {
             Alert.alert('File empty')
             return
         }
@@ -152,7 +146,7 @@ const DisturbancePhotoScreen = ({setPhotoData}) => {
                 }
             )
             const data = await response.json();
-            if (data.secure_url){
+            if (data.secure_url) {
                 console.log('Uploaded Image:');
                 console.log(data.secure_url)
                 setUploadedUrl(data.secure_url); // сохраняем URL в состояние
@@ -160,10 +154,12 @@ const DisturbancePhotoScreen = ({setPhotoData}) => {
                 try {
                     await AsyncStorage.setItem('uploadedImageUrl', data.secure_url);
                     console.log('URL saved to AsyncStorage');
+                    setPhotoData(data.secure_url)
+                    console.log('URL saved to PhotoData => create ');
                 } catch (e) {
                     console.error('Failed to save URL to AsyncStorage', e);
                 }
-            }else{
+            } else {
                 console.error(data)
             }
         } catch (error) {
@@ -172,7 +168,7 @@ const DisturbancePhotoScreen = ({setPhotoData}) => {
     };
 
     useEffect(() => {
-        console.log('image-console',image)
+        console.log('image-console', image)
     }, []);
 
     return (
@@ -191,9 +187,9 @@ const DisturbancePhotoScreen = ({setPhotoData}) => {
                 <Text style={styles.buttonText}>Сохранить фото</Text>
             </TouchableOpacity>
 
-            {uploadedUrl && <Image source={{ uri: uploadedUrl }} style={styles.image} />}
+            {uploadedUrl && <Image source={{uri: uploadedUrl}} style={styles.image}/>}
 
-            <StatusBar style="auto" />
+            <StatusBar style="auto"/>
         </View>
     );
 
@@ -224,7 +220,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         elevation: 3, // Android shadow
         shadowColor: '#000', // iOS shadow
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.2,
         shadowRadius: 4,
     },
@@ -245,3 +241,4 @@ const styles = StyleSheet.create({
 
 
 export default DisturbancePhotoScreen;
+

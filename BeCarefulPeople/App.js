@@ -6,11 +6,17 @@ import {StyleSheet} from 'react-native';
 import {I18nextProvider} from "react-i18next";
 import i18n, {loadLanguage} from './i18n';
 import * as Localization from "expo-localization";
+import {fetchalluser} from "./database";
 
 const App = () => {
     useEffect(() => {
         startLang();
+        loadAllUser();
     }, []);
+
+    const loadAllUser = async () => {
+        await fetchalluser();
+    }
 
     const startLang = async () => {
         await loadLanguage();

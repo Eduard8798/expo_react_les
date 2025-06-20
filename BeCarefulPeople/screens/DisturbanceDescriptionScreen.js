@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { Ionicons } from '@expo/vector-icons';
-import dayjs from "dayjs";
+import {Ionicons} from '@expo/vector-icons';
 
 const DisturbanceDescriptionScreen = ({setDescriptionData}) => {
 
